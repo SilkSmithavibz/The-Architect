@@ -68,7 +68,7 @@ async def ban_new(client, message):
 async def start_comm(client, message: Message, _):
     chat_id = message.chat.id
     await add_served_user(message.from_user.id)
-    await message.react("🕊️")
+    await message.react("💋")
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
@@ -231,53 +231,45 @@ async def start_comm(client, message: Message, _):
 
         try:
             out = music_start_panel(_)
-            vip = await message.reply_text(f"**ᴅιиg ᴅσиg ꨄ︎❣️.....**")
-            await vip.edit_text(f"**ᴅιиg ᴅσиg ꨄ︎.❣️....**")
-            await vip.edit_text(f"**ᴅιиg ᴅσиg ꨄ︎..❣️...**")
-            await vip.edit_text(f"**ᴅιиg ᴅσиg ꨄ︎...❣️..**")
-            await vip.edit_text(f"**ᴅιиg ᴅσиg ꨄ︎....❣️.**")
-            await vip.edit_text(f"**ᴅιиg ᴅσиg ꨄ︎.....❣️**")
+            vip = await message.reply_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚🪺.....**")
+            await vip.edit_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚.❤️‍🩹....**")
+            await vip.edit_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚..🦋...**")
+            await vip.edit_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚...🍓..**")
+            await vip.edit_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚....❣️.**")
+            await vip.edit_text(f"**𝑯𝒆𝒚 𝑩𝒂𝒃𝒚 𐙚.....🍥**")
 
             await vip.delete()
-            vips = await message.reply_text("**⚡ѕ**")
+            vips = await message.reply_text("**🌪️ѕ**")
             await asyncio.sleep(0.1)
             await vips.edit_text("**⚡ѕт**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтα**")
+            await vips.edit_text("**☔ѕтα**")
             #  await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαя**")
+            await vips.edit_text("**🌬️ѕтαя**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαят**")
+            await vips.edit_text("**💧ѕтαят**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятι**")
+            await vips.edit_text("**🌊ѕтαятι**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιи**")
+            await vips.edit_text("**🫧ѕтαятιи**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιиg**")
+            await vips.edit_text("**🌈ѕтαятιиg**")
             # await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιиg.**")
+            await vips.edit_text("**🏔️ѕтαятιиg.**")
             await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιиg....**")
+            await vips.edit_text("**❄️ѕтαятιиg....**")
             await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιиg.**")
+            await vips.edit_text("**☃️ѕтαятιиg.**")
             await asyncio.sleep(0.1)
-            await vips.edit_text("**⚡ѕтαятιиg....**")
-            if message.chat.photo:
+            await vips.edit_text("**🌲ѕтαятιиg....**")
+            
+            await vips.delete()
 
-                userss_photo = await app.download_media(
-                    message.chat.photo.big_file_id,
-                )
-            else:
-                userss_photo = "assets/nodp.png"
-            if userss_photo:
-                chat_photo = userss_photo
-            chat_photo = userss_photo if userss_photo else START_IMG_URL
-
-        except AttributeError:
-            chat_photo = "assets/nodp.png"
-        await vips.delete()
+        done = await message.reply_text("💞")
+        await asyncio.sleep(0.5)
+        await done.delete()
         await message.reply_photo(
-            photo=chat_photo,
+            photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
