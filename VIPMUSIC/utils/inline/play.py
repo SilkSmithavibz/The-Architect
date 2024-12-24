@@ -1,5 +1,5 @@
 import math
-from VIPMUSIC.types import InlineKeyboardButton
+from pyrogram.types import InlineKeyboardButton
 from VIPMUSIC import app
 import config
 from VIPMUSIC.utils.formatters import time_to_seconds
