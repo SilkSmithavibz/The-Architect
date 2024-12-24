@@ -1,7 +1,8 @@
 import time
-
 from pyrogram import filters
-from pyrogram.enums import ChatType
+from pyrogram.errors import ChannelInvalid
+from pyrogram.enums import ChatType, ChatMembersFilter
+
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from youtubesearchpython.__future__ import VideosSearch
 
@@ -16,8 +17,8 @@ from VIPMUSIC.utils.database import (
     get_lang,
     is_banned_user,
     is_on_off,
+    connect_to_chat,
 )
-from VIPMUSIC.utils import bot_sys_stats
 from VIPMUSIC.utils.decorators.language import LanguageStart
 from VIPMUSIC.utils.formatters import get_readable_time
 from VIPMUSIC.utils.inline import help_pannel, private_panel, start_panel
@@ -29,21 +30,42 @@ from strings import get_string
 @LanguageStart
 async def start_pm(client, message: Message, _):
     await add_served_user(message.from_user.id)
+    await message.react("❤️")
     if len(message.text.split()) > 1:
         name = message.text.split(None, 1)[1]
+
+        if name[0:3] == "del":
+            await del_plist_msg(client=client, message=message, _=_)
+
         if name[0:4] == "help":
             keyboard = help_pannel(_)
             return await message.reply_photo(
                 photo=config.START_IMG_URL,
-                caption=_["help_1"].format(config.SUPPORT_GROUP),
-                protect_content=True,
+                caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
+        if name[:8] == "connect_":
+            chat_id = name[8:]
+            try:
+                title = (await app.get_chat(chat_id)).title
+            except ChannelInvalid:
+                return await message.reply_text(f"ʟᴏᴏʟ ʟɪᴋᴇ ɪ ᴀᴍ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ᴏғ ᴛʜᴇ ᴄʜᴀᴛ ɪᴅ {chat_id}")
+            
+            admin_ids = [ member.user.id async for member in app.get_chat_members(chat_id, filter=ChatMembersFilter.ADMINISTRATORS)]
+            if message.from_user.id not in admin_ids:
+                return await message.reply_text(f"sᴏʀʀʏ sɪʀ ʙᴜᴛ ɪ ᴛʜɪɴᴋ ᴛʜᴀᴛ ʏᴏᴜ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ ᴏғ {title} ")
+            a = await connect_to_chat(message.from_user.id, chat_id)
+            if a:
+                await message.reply_text(f"ʏᴏᴜ ᴀʀᴇ ɴᴏᴡ ᴄᴏɴɴᴇᴄᴛᴇᴅ ᴛᴏ {title}")
+            else:
+                await message.reply_text(a)
+
+        
         if name[0:3] == "sud":
             await sudoers_list(client=client, message=message, _=_)
             if await is_on_off(2):
                 return await app.send_message(
-                    chat_id=config.LOG_GROUP_ID,
+                    chat_id=config.LOGGER_ID,
                     text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>sᴜᴅᴏʟɪsᴛ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
                 )
             return
@@ -68,7 +90,7 @@ async def start_pm(client, message: Message, _):
                 [
                     [
                         InlineKeyboardButton(text=_["S_B_8"], url=link),
-                        InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_GROUP),
+                        InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_CHAT),
                     ],
                 ]
             )
@@ -81,20 +103,19 @@ async def start_pm(client, message: Message, _):
             )
             if await is_on_off(2):
                 return await app.send_message(
-                    chat_id=config.LOG_GROUP_ID,
+                    chat_id=config.LOGGER_ID,
                     text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ ᴛᴏ ᴄʜᴇᴄᴋ <b>ᴛʀᴀᴄᴋ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</b>.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
                 )
     else:
         out = private_panel(_)
-        UP, CPU, RAM, DISK = await bot_sys_stats()
         await message.reply_photo(
             photo=config.START_IMG_URL,
-            caption=_["start_2"].format(message.from_user.mention, app.mention, UP, DISK, CPU, RAM),
+            caption=_["start_2"].format(message.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(out),
         )
         if await is_on_off(2):
             return await app.send_message(
-                chat_id=config.LOG_GROUP_ID,
+                chat_id=config.LOGGER_ID,
                 text=f"{message.from_user.mention} ᴊᴜsᴛ sᴛᴀʀᴛᴇᴅ ᴛʜᴇ ʙᴏᴛ.\n\n<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>\n<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}",
             )
 
@@ -132,7 +153,7 @@ async def welcome(client, message: Message):
                         _["start_5"].format(
                             app.mention,
                             f"https://t.me/{app.username}?start=sudolist",
-                            config.SUPPORT_GROUP,
+                            config.SUPPORT_CHAT,
                         ),
                         disable_web_page_preview=True,
                     )
@@ -140,7 +161,7 @@ async def welcome(client, message: Message):
 
                 out = start_panel(_)
                 await message.reply_photo(
-                    photo=config.START_IMG_URL,
+                    config.START_IMG_URL,
                     caption=_["start_3"].format(
                         message.from_user.first_name,
                         app.mention,
@@ -153,3 +174,4 @@ async def welcome(client, message: Message):
                 await message.stop_propagation()
         except Exception as ex:
             print(ex)
+                
