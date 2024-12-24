@@ -27,7 +27,7 @@ API_HASH = "bb5c1fc4d8b6c163780820e50ccb8a8a"
 BOT_TOKEN = getenv("ShinobuMusicBot")
 
 
-MONGO_DB_URI = "1mongodb+srv://marwin0985:BEwJvxaADStDLScc@cluster0.oh0nk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_DB_URI = "mongodb+srv://marwin0985:BEwJvxaADStDLScc@cluster0.oh0nk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 
 CLEANMODE_DELETE_MINS = int(
