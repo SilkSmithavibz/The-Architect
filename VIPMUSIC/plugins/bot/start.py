@@ -264,6 +264,7 @@ async def start_comm(client, message: Message, _):
             await vips.edit_text("**🌲ѕтαятιиg....**")
             
         await vips.delete()
+        
         await message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
