@@ -1,29 +1,58 @@
+import asyncio
 import time
-from pyrogram import filters
-from pyrogram.errors import ChannelInvalid
-from pyrogram.enums import ChatType, ChatMembersFilter
 
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram import filters
+from pyrogram.enums import ParseMode
+from pyrogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 from youtubesearchpython.__future__ import VideosSearch
 
 import config
-from VIPMUSIC import app
-from VIPMUSIC.misc import _boot_
+from config import BANNED_USERS, START_IMG_URL
+from strings import get_string
+from VIPMUSIC import HELPABLE, Telegram, YouTube, app
+from VIPMUSIC.misc import SUDOERS, _boot_
+from VIPMUSIC.plugins.play.playlist import del_plist_msg
 from VIPMUSIC.plugins.sudo.sudoers import sudoers_list
 from VIPMUSIC.utils.database import (
     add_served_chat,
     add_served_user,
-    blacklisted_chats,
+    get_assistant,
     get_lang,
+    get_userss,
     is_banned_user,
     is_on_off,
-    connect_to_chat,
+    is_served_private_chat,
 )
 from VIPMUSIC.utils.decorators.language import LanguageStart
 from VIPMUSIC.utils.formatters import get_readable_time
-from VIPMUSIC.utils.inline import help_pannel, private_panel, start_panel
-from config import BANNED_USERS
-from strings import get_string
+from VIPMUSIC.utils.functions import MARKDOWN, WELCOMEHELP
+from VIPMUSIC.utils.inline import alive_panel, music_start_panel, start_pannel
+
+from .help import paginate_modules
+
+loop = asyncio.get_running_loop()
+
+
+@app.on_message(group=-1)
+async def ban_new(client, message):
+    user_id = (
+        message.from_user.id if message.from_user and message.from_user.id else 777000
+    )
+    chat_name = message.chat.title if message.chat.title else ""
+    if await is_banned_user(user_id):
+        try:
+            alert_message = f"😳"
+            BAN = await message.chat.ban_member(user_id)
+            if BAN:
+                await message.reply_text(alert_message)
+        except:
+            pass
+
 
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
