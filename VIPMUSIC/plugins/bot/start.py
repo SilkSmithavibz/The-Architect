@@ -264,7 +264,10 @@ async def start_comm(client, message: Message, _):
             await vips.edit_text("**🌲ѕтαятιиg....**")
             
         await vips.delete()
-        
+
+        done = await message.reply_text("💞")
+        await asyncio.sleep(0.5)
+        await done.delete()
         await message.reply_photo(
             photo=config.START_IMG_URL,
             caption=_["start_2"].format(message.from_user.mention, app.mention),
@@ -282,107 +285,61 @@ async def start_comm(client, message: Message, _):
 @app.on_message(filters.command(["start"]) & filters.group & ~BANNED_USERS)
 @LanguageStart
 async def testbot(client, message: Message, _):
-    try:
-        chat_id = message.chat.id
-        try:
-            # Try downloading the group's photo
-            groups_photo = await client.download_media(
-                message.chat.photo.big_file_id, file_name=f"chatpp{chat_id}.png"
-            )
-            chat_photo = groups_photo if groups_photo else START_IMG_URL
-        except AttributeError:
-            # If there's no chat photo, use the default image
-            chat_photo = START_IMG_URL
-
-        # Get the alive panel and uptime
-        out = alive_panel(_)
-        uptime = int(time.time() - _boot_)
-
-        # Send the response with the group photo or fallback to START_IMG_URL
-        if chat_photo:
-            await message.reply_photo(
-                photo=chat_photo,
-                caption=_["start_7"].format(client.mention, get_readable_time(uptime)),
-                reply_markup=InlineKeyboardMarkup(out),
-            )
-        else:
-            await message.reply_photo(
-                photo=config.START_IMG_URL,
-                caption=_["start_7"].format(client.mention, get_readable_time(uptime)),
-                reply_markup=InlineKeyboardMarkup(out),
-            )
-
-        # Add the chat to the served chat list
-        return await add_served_chat(chat_id)
-
-    except Exception as e:
-        print(f"Error: {e}")
+    photo_file = await app.download_media(message.chat.photo.big_file_id)
+    out = alive_panel(_)
+    uptime = int(time.time() - _boot_)
+    chat_id = message.chat.id
+    if photo_file:
+        await message.reply_photo(
+            photo=photo_file,
+            caption=_["start_7"].format(app.mention, get_readable_time(uptime)),
+            reply_markup=InlineKeyboardMarkup(out),
+        )
+    else:
+        await message.reply_photo(
+            photo=config.START_IMG_URL,
+            caption=_["start_7"].format(app.mention, get_readable_time(uptime)),
+            reply_markup=InlineKeyboardMarkup(out),
+        )
+    return await add_served_chat(message.chat.id)
 
 
 @app.on_message(filters.new_chat_members, group=3)
 async def welcome(client, message: Message):
     chat_id = message.chat.id
-
-    # Private bot mode check
     if config.PRIVATE_BOT_MODE == str(True):
-        if not await is_served_private_chat(chat_id):
+        if not await is_served_private_chat(message.chat.id):
             await message.reply_text(
-                "**ᴛʜɪs ʙᴏᴛ's ᴘʀɪᴠᴀᴛᴇ ᴍᴏᴅᴇ ʜᴀs ʙᴇᴇɴ ᴇɴᴀʙʟᴇᴅ. ᴏɴʟʏ ᴍʏ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs. ɪғ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴜsᴇ ɪᴛ ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ, ᴀsᴋ ᴍʏ ᴏᴡɴᴇʀ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇ ʏᴏᴜʀ ᴄʜᴀᴛ.**"
+                "**ᴛʜɪs ʙᴏᴛ's ᴘʀɪᴠᴀᴛᴇ ᴍᴏᴅᴇ ʜᴀs ʙᴇᴇɴ ᴇɴᴀʙʟᴇᴅ ᴏɴʟʏ ᴍʏ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ɪғ ᴡᴀɴᴛ ᴛᴏ ᴜsᴇ ᴛʜɪs ɪɴ ʏᴏᴜʀ ᴄʜᴀᴛ sᴏ sᴀʏ ᴛᴏ ᴍʏ ᴏᴡɴᴇʀ ᴛᴏ ᴀᴜᴛʜᴏʀɪᴢᴇ ʏᴏᴜʀ ᴄʜᴀᴛ."
             )
-            return await client.leave_chat(chat_id)
+            return await app.leave_chat(message.chat.id)
     else:
         await add_served_chat(chat_id)
-
-    # Handle new chat members
     for member in message.new_chat_members:
         try:
-            language = await get_lang(chat_id)
+            language = await get_lang(message.chat.id)
             _ = get_string(language)
-
-            # If bot itself joins the chat
-            if member.id == client.id:
-                try:
-                    groups_photo = await client.download_media(
-                        message.chat.photo.big_file_id, file_name=f"chatpp{chat_id}.png"
-                    )
-                    chat_photo = groups_photo if groups_photo else START_IMG_URL
-                except AttributeError:
-                    chat_photo = START_IMG_URL
-
-                userbot = await get_assistant(chat_id)
+            if member.id == app.id:
+                photo_file = await app.download_media(message.chat.photo.big_file_id)
+                userbot = await get_assistant(message.chat.id)
                 out = start_pannel(_)
                 await message.reply_photo(
-                    photo=chat_photo,
+                    photo=photo_file,
                     caption=_["start_2"],
                     reply_markup=InlineKeyboardMarkup(out),
                 )
-
-            # Handle owner joining
             if member.id in config.OWNER_ID:
                 return await message.reply_text(
-                    _["start_3"].format(client.mention, member.mention)
+                    _["start_3"].format(app.mention, member.mention)
                 )
-
-            # Handle SUDOERS joining
             if member.id in SUDOERS:
                 return await message.reply_text(
-                    _["start_4"].format(client.mention, member.mention)
+                    _["start_4"].format(app.mention, member.mention)
                 )
             return
+        except:
 
-        except Exception as e:
-            print(f"Error: {e}")
             return
-
-
-@app.on_callback_query(filters.regex("go_to_start"))
-@LanguageStart
-async def go_to_home(client, callback_query: CallbackQuery, _):
-    out = music_start_panel(_)
-    await callback_query.message.edit_text(
-        text=_["start_2"].format(callback_query.message.from_user.mention, app.mention),
-        reply_markup=InlineKeyboardMarkup(out),
-    )
 
 
 __MODULE__ = "Boᴛ"
