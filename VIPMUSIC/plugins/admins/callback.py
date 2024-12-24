@@ -27,16 +27,6 @@ from VIPMUSIC.utils.database import (
 )
 from VIPMUSIC.utils.decorators.language import languageCB
 from VIPMUSIC.utils.formatters import seconds_to_min
-from VIPMUSIC.utils.inline import (
-    close_markup,
-    panel_markup_1,
-    panel_markup_2,
-    panel_markup_3,
-    panel_markup_4,
-    panel_markup_5,
-    stream_markup,
-    stream_markup2,
-)
 from VIPMUSIC.utils.inline.play import stream_markup
 from VIPMUSIC.utils.stream.autoclear import auto_clean
 from VIPMUSIC.utils.thumbnails import get_thumb
