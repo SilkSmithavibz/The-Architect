@@ -44,25 +44,6 @@ maintenance = []
 autoend = {}
 greeting_message = {"welcome": {}, "goodbye": {}}
 
-#connect 
-async def connect_to_chat(user_id: int, chat_id: int):
-    existing = await connectdb.find_one({'user_id': user_id, 'chat_id': chat_id})
-    if existing:
-        return True
-
-    result = await connectdb.update_one(
-        {'user_id': user_id},
-        {'$set': {'chat_id': chat_id}},
-        upsert=True
-    )
-    
-    
-    return result.modified_count > 0 or result.upserted_id is not None
- 
-async def get_connected_chat(user_id: int):
-    user = await connectdb.find_one({'user_id': user_id}, {'_id': 0, 'chat_id': 1})
-    return user['chat_id'] if user and 'chat_id' in user else False
-
 
 async def get_filters_count() -> dict:
     chats_count = 0
