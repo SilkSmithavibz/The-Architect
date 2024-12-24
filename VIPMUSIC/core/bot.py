@@ -9,6 +9,7 @@ import threading
 
 import uvloop
 import pyrogram
+from pyrogram import errors
 from flask import Flask
 from pyrogram import Client, idle
 from pyrogram.enums import ChatMemberStatus
