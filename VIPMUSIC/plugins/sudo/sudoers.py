@@ -2,13 +2,13 @@ from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from pyrogram.types import Message
 from strings import get_string, helpers
-from AmritaXMusic import app
+from VIPMUSIC import app
 from pyrogram.types import InputMediaVideo
-from AmritaXMusic.misc import SUDOERS
-from AmritaXMusic.utils.database import add_sudo, remove_sudo
-from AmritaXMusic.utils.decorators.language import language
-from AmritaXMusic.utils.extraction import extract_user
-from AmritaXMusic.utils.inline import close_markup
+from VIPMUSIC.misc import SUDOERS
+from VIPMUSIC.utils.database import add_sudo, remove_sudo
+from VIPMUSIC.utils.decorators.language import language
+from VIPMUSIC.utils.extraction import extract_user
+from VIPMUSIC.utils.inline import close_markup
 from config import BANNED_USERS, OWNER_ID
 
 
