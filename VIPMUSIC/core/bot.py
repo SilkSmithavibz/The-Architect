@@ -8,6 +8,7 @@ import asyncio
 import threading
 
 import uvloop
+import pyrogram
 from flask import Flask
 from pyrogram import Client, idle
 from pyrogram.enums import ChatMemberStatus
