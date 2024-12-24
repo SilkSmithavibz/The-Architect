@@ -24,7 +24,7 @@ API_HASH = "bb5c1fc4d8b6c163780820e50ccb8a8a"
 
 
 ## Get it from @Botfather in Telegram.
-BOT_TOKEN = getenv("ShinobuMusicBot")
+BOT_TOKEN = "7229854636:AAHuONAmzkNPz3o34DVhsCYolFiQpda0rZo"
 
 
 MONGO_DB_URI = "mongodb+srv://marwin0985:BEwJvxaADStDLScc@cluster0.oh0nk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
